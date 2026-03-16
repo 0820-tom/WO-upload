@@ -222,3 +222,10 @@ if st.session_state.pdf_parsed:
                 st.subheader("📋 실행 로그")
                 for m in log_messages:
                     st.write(m)
+                # 스크린샷 표시
+                import glob
+                screenshots = sorted(glob.glob("/tmp/error_*.png")) + ["/tmp/login_result.png"]
+                for path in screenshots:
+                    import os
+                    if os.path.exists(path):
+                        st.image(path, caption=os.path.basename(path))

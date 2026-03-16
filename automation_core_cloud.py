@@ -250,11 +250,20 @@ def run_automation(res, status_callback=None):
                     except: pass
                     
                     page.wait_for_selector("body", timeout=30000)
+                    log_status(f"📸 로그인 후 URL: {page.url}")
+                    # 스크린샷 저장
+                    page.screenshot(path="/tmp/login_result.png")
+                    log_status("📸 스크린샷 저장됨: /tmp/login_result.png")
                     page.wait_for_selector('a[title="subject"] > div.l-menu-subject-off', state="visible", timeout=15000)
                     subject_btn_found = True
                 except Exception as loop_e:
                     retry_count += 1
+                    log_status(f"❌ 시도 {retry_count} 실패: {loop_e}")
                     logging.error(f"초기 진입 지연: {loop_e}")
+                    try:
+                        page.screenshot(path=f"/tmp/error_{retry_count}.png")
+                        log_status(f"📸 에러 스크린샷: /tmp/error_{retry_count}.png")
+                    except: pass
                     if retry_count >= max_retries:
                         raise Exception("최대 재시도 횟수를 초과하여 로그인 및 초기 화면 진입에 실패했습니다.")
 
