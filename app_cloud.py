@@ -202,10 +202,14 @@ if st.session_state.pdf_parsed:
                 "cro_info": {"name": cro_name, "person": person, "phone": phone, "email": email},
             }
 
-            status_container = st.empty()
+            log_container = st.container()
+            log_messages = []
 
             def status_update(msg):
-                status_container.info(msg)
+                log_messages.append(msg)
+                with log_container:
+                    for m in log_messages:
+                        st.write(m)
 
             with st.spinner("웹 자동화 진행 중... 잠시 기다려주세요."):
                 res = run_automation(result_payload, status_callback=status_update)
@@ -215,3 +219,6 @@ if st.session_state.pdf_parsed:
                 st.balloons()
             else:
                 st.error("⛔ 자동화 실패: " + res["message"])
+                st.subheader("📋 실행 로그")
+                for m in log_messages:
+                    st.write(m)
